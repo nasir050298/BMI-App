@@ -1,58 +1,104 @@
+/* General Styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f4f4f4;
+  margin: 0;
 }
 
 .container {
-  max-width: 500px;
+  max-width: 400px;
   background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
   text-align: center;
+  transition: 0.3s;
 }
 
-h1, h2 {
-  margin-bottom: 15px;
+.container:hover {
+  transform: translateY(-5px);
 }
 
+/* Headings */
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+h2 {
+  font-size: 20px;
+  margin-top: 20px;
+  color: #555;
+}
+
+/* Input Fields */
 .input-group {
   margin-bottom: 15px;
   text-align: left;
 }
 
 label {
-  font-weight: bold;
+  font-weight: 600;
+  color: #444;
 }
 
-input, select {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
+input,
+select {
   width: 100%;
   padding: 10px;
-  background: #007bff;
+  margin-top: 5px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #f4f4f4;
+  box-shadow: inset 2px 2px 5px #ddd, inset -2px -2px 5px #fff;
+  transition: 0.3s;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  background: #e9e9e9;
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #ff758c, #ff7eb3);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
 button:hover {
-  background: #0056b3;
+  background: linear-gradient(90deg, #ff5c85, #ff6aa1);
+  transform: scale(1.05);
 }
 
+/* Results */
 .result {
   margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 117, 140, 0.1);
+  border-radius: 8px;
   font-size: 18px;
   font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+  .container {
+    width: 90%;
+    padding: 20px;
+  }
 }

@@ -27,8 +27,8 @@ const App = () => {
     let heightCm = parseFloat(height);
 
     if (unit === "imperial") {
-      weightKg = weightKg * 0.453592; // Convert lbs to kg
-      heightCm = heightCm * 2.54; // Convert inches to cm
+      weightKg = weightKg * 0.453592;
+      heightCm = heightCm * 2.54;
     }
 
     if (weightKg && heightCm && age) {
@@ -44,18 +44,15 @@ const App = () => {
 
       setStatus(category);
 
-      // Calculate BFP (Body Fat Percentage)
       let bfpValue =
         gender === "male"
           ? (1.20 * bmiValue + 0.23 * age - 16.2).toFixed(2)
           : (1.20 * bmiValue + 0.23 * age - 5.4).toFixed(2);
       setBfp(bfpValue);
 
-      // Calculate Waist-to-Height Ratio (Dummy value for now)
       let whtrValue = (heightCm / weightKg).toFixed(2);
       setWhtr(whtrValue);
 
-      // Save to history
       const newHistory = [
         ...history,
         { bmi: bmiValue, date: new Date().toLocaleDateString() },
@@ -81,7 +78,7 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1>BMI Calculator</h1>
+      <h1>BMI & Health Calculator</h1>
       <div className="input-group">
         <label>Age:</label>
         <input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
