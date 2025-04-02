@@ -1,64 +1,125 @@
-// App.js
-import React from 'react';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import { Line } from "react-chartjs-2";
+import { Chart, registerables } from "chart.js";
 
-function App() {
+Chart.register(...registerables);
+
+const App = () => {
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("male");
+  const [unit, setUnit] = useState("metric");
+  const [bmi, setBmi] = useState(null);
+  const [bfp, setBfp] = useState(null);
+  const [whtr, setWhtr] = useState(null);
+  const [status, setStatus] = useState("");
+  const [history, setHistory] = useState([]);
+
+  useEffect(() => {
+    const savedHistory = JSON.parse(localStorage.getItem("bmiHistory")) || [];
+    setHistory(savedHistory);
+  }, []);
+
+  const calculateMetrics = () => {
+    let weightKg = parseFloat(weight);
+    let heightCm = parseFloat(height);
+
+    if (unit === "imperial") {
+      weightKg = weightKg * 0.453592; // Convert lbs to kg
+      heightCm = heightCm * 2.54; // Convert inches to cm
+    }
+
+    if (weightKg && heightCm && age) {
+      const heightM = heightCm / 100;
+      const bmiValue = (weightKg / (heightM * heightM)).toFixed(2);
+      setBmi(bmiValue);
+
+      let category = "";
+      if (bmiValue < 18.5) category = "Underweight";
+      else if (bmiValue >= 18.5 && bmiValue < 24.9) category = "Normal weight";
+      else if (bmiValue >= 25 && bmiValue < 29.9) category = "Overweight";
+      else category = "Obese";
+
+      setStatus(category);
+
+      // Calculate BFP (Body Fat Percentage)
+      let bfpValue =
+        gender === "male"
+          ? (1.20 * bmiValue + 0.23 * age - 16.2).toFixed(2)
+          : (1.20 * bmiValue + 0.23 * age - 5.4).toFixed(2);
+      setBfp(bfpValue);
+
+      // Calculate Waist-to-Height Ratio (Dummy value for now)
+      let whtrValue = (heightCm / weightKg).toFixed(2);
+      setWhtr(whtrValue);
+
+      // Save to history
+      const newHistory = [
+        ...history,
+        { bmi: bmiValue, date: new Date().toLocaleDateString() },
+      ];
+      setHistory(newHistory);
+      localStorage.setItem("bmiHistory", JSON.stringify(newHistory));
+    } else {
+      alert("Please enter valid values!");
+    }
+  };
+
+  const historyData = {
+    labels: history.map((entry) => entry.date),
+    datasets: [
+      {
+        label: "BMI Progress",
+        data: history.map((entry) => entry.bmi),
+        borderColor: "blue",
+        fill: false,
+      },
+    ],
+  };
+
   return (
-    <div className="app-container">
-      {/* Responsive Navbar */}
-      <nav className="navbar">
-        <div className="navbar-brand">Logo</div>
-        <ul className="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/">About</a></li>
-          <li><a href="/">Services</a></li>
-          <li><a href="/">Contact</a></li>
-        </ul>
-      </nav>
-
-      {/* Responsive Main Content */}
-      <main className="main-content">
-        <h1>Welcome to Our Responsive App</h1>
-        
-        <div className="card-container">
-          {/* Cards will stack on mobile and arrange in grid on desktop */}
-          <div className="card">
-            <img src="https://via.placeholder.com/300" alt="Demo" />
-            <h3>Feature 1</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          </div>
-          
-          <div className="card">
-            <img src="https://via.placeholder.com/300" alt="Demo" />
-            <h3>Feature 2</h3>
-            <p>Sed do eiusmod tempor incididunt ut labore et dolore.</p>
-          </div>
-          
-          <div className="card">
-            <img src="https://via.placeholder.com/300" alt="Demo" />
-            <h3>Feature 3</h3>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation.</p>
-          </div>
+    <div className="container">
+      <h1>BMI Calculator</h1>
+      <div className="input-group">
+        <label>Age:</label>
+        <input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+      </div>
+      <div className="input-group">
+        <label>Gender:</label>
+        <select value={gender} onChange={(e) => setGender(e.target.value)}>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div className="input-group">
+        <label>Unit:</label>
+        <select value={unit} onChange={(e) => setUnit(e.target.value)}>
+          <option value="metric">Metric (kg, cm)</option>
+          <option value="imperial">Imperial (lbs, inches)</option>
+        </select>
+      </div>
+      <div className="input-group">
+        <label>Weight ({unit === "metric" ? "kg" : "lbs"}):</label>
+        <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
+      </div>
+      <div className="input-group">
+        <label>Height ({unit === "metric" ? "cm" : "inches"}):</label>
+        <input type="number" value={height} onChange={(e) => setHeight(e.target.value)} />
+      </div>
+      <button onClick={calculateMetrics}>Calculate</button>
+      {bmi && (
+        <div className="result">
+          <p>Your BMI: {bmi} ({status})</p>
+          <p>Body Fat Percentage: {bfp}%</p>
+          <p>Waist-to-Height Ratio: {whtr}</p>
         </div>
-      </main>
-
-      {/* Responsive Footer */}
-      <footer className="footer">
-        <div className="footer-section">
-          <h4>About Us</h4>
-          <p>We create amazing web experiences</p>
-        </div>
-        <div className="footer-section">
-          <h4>Contact</h4>
-          <p>Email: contact@example.com</p>
-        </div>
-        <div className="footer-section">
-          <h4>Follow Us</h4>
-          <p>Social media links</p>
-        </div>
-      </footer>
+      )}
+      <h2>BMI History</h2>
+      <Line data={historyData} />
     </div>
   );
-}
+};
 
 export default App;
